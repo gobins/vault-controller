@@ -1,0 +1,7 @@
+domain: vault.gobins.io
+repo: github.com/gobins/vault-controller
+resources:
+- group: vault
+  kind: Config
+  version: v1
+version: "2"

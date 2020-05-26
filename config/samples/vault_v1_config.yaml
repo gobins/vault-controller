@@ -1,0 +1,7 @@
+apiVersion: vault.vault.gobins.io/v1
+kind: Config
+metadata:
+  name: config-sample
+spec:
+  # Add fields here
+  foo: bar
