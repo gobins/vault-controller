@@ -1,9 +1,10 @@
 apiVersion: vault.vault.gobins.io/v1
-kind: Config
+kind: SysAuth
 metadata:
-  name: config-sample
+  name: sysauth-sample
   namespace: vault-controller-system
 spec:
   # Add fields here
-  Url: http://10.97.218.105:8200
-  Token: root
+  path: myapprole
+  description: testing
+  type: approle

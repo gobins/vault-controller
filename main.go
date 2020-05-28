@@ -27,6 +27,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	vaultv1 "github.com/gobins/vault-controller/api/v1"
+	"github.com/gobins/vault-controller/controllers"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -65,6 +66,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err = (&controllers.SysAuthReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("SysAuth"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "SysAuth")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	setupLog.Info("starting manager")

@@ -27,7 +27,7 @@ spec:
         - /manager
         args:
         - --enable-leader-election
-        image: controller:latest
+        image: localhost:5000/vault-controller:latest
         name: manager
         resources:
           limits:
