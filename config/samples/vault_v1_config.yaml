@@ -1,9 +1,0 @@
-apiVersion: vault.vault.gobins.io/v1
-kind: Config
-metadata:
-  name: config-sample
-  namespace: vault-controller-system
-spec:
-  # Add fields here
-  url: "http://10.97.218.105:8200"
-  token: "root"
