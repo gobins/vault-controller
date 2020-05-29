@@ -9,6 +9,14 @@ rules:
 - apiGroups:
   - vault.vault.gobins.io
   resources:
+  - configs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - vault.vault.gobins.io
+  resources:
   - sysauths
   verbs:
   - create

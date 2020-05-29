@@ -5,5 +5,5 @@ metadata:
   namespace: vault-controller-system
 spec:
   # Add fields here
-  Url: http://10.97.218.105:8200
-  Token: root
+  url: "http://10.97.218.105:8200"
+  token: "root"

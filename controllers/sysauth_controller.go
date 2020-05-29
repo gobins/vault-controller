@@ -21,6 +21,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -37,7 +38,7 @@ type SysAuthReconciler struct {
 
 // +kubebuilder:rbac:groups=vault.vault.gobins.io,resources=sysauths,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=vault.vault.gobins.io,resources=sysauths/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=vault.vault.gobins.io,resources=config,verbs=get;list;watch
+// +kubebuilder:rbac:groups=vault.vault.gobins.io,resources=configs,verbs=get;list;watch
 
 func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
@@ -52,7 +53,7 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	err = r.Get(ctx, req.NamespacedName, &config)
+	err = r.Get(ctx, types.NamespacedName{Name: "config-sample", Namespace: "vault-controller-system"}, &config)
 	if err != nil {
 		log.Error(err, "unable to fetch config")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -60,6 +61,7 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 	if auth.Status.Updated != "True" {
 		c := vault.GetClient(config.Spec.Url, config.Spec.Token)
+		log.Info("setting vault client with url %s and token %s", config.Spec.Url, config.Spec.Token)
 		err := c.Sys().EnableAuth(auth.Spec.Path, auth.Spec.Type, auth.Spec.Description)
 		if err != nil {
 			log.Error(err, "error authenticating to vault")
