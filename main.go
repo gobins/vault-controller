@@ -26,8 +26,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	vaultv1 "github.com/gobins/go-workshop/api/v1"
-	"github.com/gobins/go-workshop/controllers"
+	vaultv1 "github.com/gobins/vault-controller/api/v1"
+	"github.com/gobins/vault-controller/controllers"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -59,7 +59,7 @@ func main() {
 		MetricsBindAddress: metricsAddr,
 		Port:               9443,
 		LeaderElection:     enableLeaderElection,
-		LeaderElectionID:   "b0f1bfb5.gobins.github.io",
+		LeaderElectionID:   "b0f1bfb5.vault.gobins.io",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")

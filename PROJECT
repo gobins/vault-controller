@@ -1,5 +1,5 @@
 domain: gobins.github.io
-repo: github.com/gobins/go-workshop
+repo: github.com/gobins/vault-controller
 resources:
 - group: vault
   kind: SysAuth

@@ -1,9 +1,10 @@
-module github.com/gobins/go-workshop
+module github.com/gobins/vault-controller
 
 go 1.13
 
 require (
 	github.com/go-logr/logr v0.1.0
+	github.com/hashicorp/vault/api v1.0.4
 	github.com/onsi/ginkgo v1.11.0
 	github.com/onsi/gomega v1.8.1
 	k8s.io/apimachinery v0.17.2

@@ -30,7 +30,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	vaultv1 "github.com/gobins/go-workshop/api/v1"
+	vaultv1 "github.com/gobins/vault-controller/api/v1"
 	// +kubebuilder:scaffold:imports
 )
 
