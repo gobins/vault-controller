@@ -1,3 +1,7 @@
 domain: gobins.github.io
 repo: github.com/gobins/go-workshop
+resources:
+- group: vault
+  kind: SysAuth
+  version: v1
 version: "2"

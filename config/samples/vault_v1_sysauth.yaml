@@ -1,0 +1,7 @@
+apiVersion: vault.gobins.github.io/v1
+kind: SysAuth
+metadata:
+  name: sysauth-sample
+spec:
+  # Add fields here
+  foo: bar
