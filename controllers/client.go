@@ -4,9 +4,12 @@ import (
 	vaultapi "github.com/hashicorp/vault/api"
 )
 
-func GetClient(address, token string) *vaultapi.Client {
-	vclient, _ := vaultapi.NewClient(nil)
+func GetClient(address, token string) (*vaultapi.Client, error) {
+	vclient, err := vaultapi.NewClient(nil)
+	if err != nil {
+		return nil, err
+	}
 	vclient.SetAddress(address)
 	vclient.SetToken(token)
-	return vclient
+	return vclient, nil
 }

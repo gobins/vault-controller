@@ -18,13 +18,15 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-logr/logr"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	vaultv1 "github.com/gobins/vault-controller/api/v1"
+	apiv1 "github.com/gobins/vault-controller/api/v1"
 	vaultapi "github.com/hashicorp/vault/api"
 )
 
@@ -40,16 +42,25 @@ type SysAuthReconciler struct {
 // +kubebuilder:rbac:groups=vault.gobins.github.io,resources=sysauths/status,verbs=get;update;patch
 
 func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	_ = context.Background()
-	_ = r.Log.WithValues("sysauth", req.NamespacedName)
+	ctx := context.Background()
+	log := r.Log.WithValues("sysauth", req.NamespacedName)
 
-	// your logic here
+	sysauth := &apiv1.SysAuth{}
+	log.Info(fmt.Sprintf("starting reconcile loop for %v", req.NamespacedName))
+	defer log.Info(fmt.Sprintf("completed reconcile loop for %v", req.NamespacedName))
 
+	err := r.Get(ctx, req.NamespacedName, sysauth)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+		return ctrl.Result{}, err
+	}
 	return ctrl.Result{}, nil
 }
 
 func (r *SysAuthReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&vaultv1.SysAuth{}).
+		For(&apiv1.SysAuth{}).
 		Complete(r)
 }

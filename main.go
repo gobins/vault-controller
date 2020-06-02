@@ -26,7 +26,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	vaultv1 "github.com/gobins/vault-controller/api/v1"
+	apiv1 "github.com/gobins/vault-controller/api/v1"
 	"github.com/gobins/vault-controller/controllers"
 	// +kubebuilder:scaffold:imports
 )
@@ -39,7 +39,7 @@ var (
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
-	_ = vaultv1.AddToScheme(scheme)
+	_ = apiv1.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 

@@ -25,17 +25,17 @@ import (
 
 // SysAuthSpec defines the desired state of SysAuth
 type SysAuthSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of SysAuth. Edit SysAuth_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Path        string `json:"path,omitempty"`
+	Description string `json:"description,omitempty"`
+	Type        string `json:"type,omitempty"`
 }
 
 // SysAuthStatus defines the observed state of SysAuth
 type SysAuthStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	CreatedTimestamp *metav1.Timestamp `json:"createdTimestamp,omitempty"`
+	UpdatedTimestamp *metav1.Timestamp `json:"updatedTimestamp,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -47,6 +47,19 @@ type SysAuth struct {
 
 	Spec   SysAuthSpec   `json:"spec,omitempty"`
 	Status SysAuthStatus `json:"status,omitempty"`
+}
+
+// IsBeingDeleted returns true if a deletion timestamp is set
+func (s *SysAuth) IsBeingDeleted() bool {
+	return !s.ObjectMeta.DeletionTimestamp.IsZero()
+}
+
+// IsSubmitted returns true if a deletion timestamp is set
+func (s *SysAuth) IsSubmitted() bool {
+	if s.Status.CreatedTimestamp == nil {
+		return false
+	}
+	return true
 }
 
 // +kubebuilder:object:root=true
