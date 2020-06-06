@@ -34,17 +34,30 @@ spec:
         spec:
           description: SysAuthSpec defines the desired state of SysAuth
           properties:
+            config:
+              description: AuthConfig define input config for SysAuth
+              properties:
+                default_lease_ttl:
+                  type: string
+                max_lease_ttl:
+                  type: string
+              type: object
             description:
               type: string
+            local:
+              type: boolean
             path:
-              description: Foo is an example field of SysAuth. Edit SysAuth_types.go
-                to remove/update
               type: string
+            seal_wrap:
+              type: boolean
             type:
               type: string
           type: object
         status:
           description: SysAuthStatus defines the observed state of SysAuth
+          properties:
+            hash:
+              type: string
           type: object
       type: object
   version: v1

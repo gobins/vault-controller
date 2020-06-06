@@ -67,7 +67,7 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 			r.Recorder.Event(sysauth, corev1.EventTypeWarning, "deleting finalizer", fmt.Sprintf("failed to delete finalizer: %s", err))
 			return ctrl.Result{}, fmt.Errorf("error when handling finalizer: %v", err)
 		}
-		r.Recorder.Event(sysauth, corev1.EventTypeNormal, "Deleted", "Object finalizer is deleted")
+		r.Recorder.Event(sysauth, corev1.EventTypeNormal, "deleted", "object finalizer is deleted")
 		return ctrl.Result{}, nil
 	}
 
@@ -80,14 +80,24 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		r.Recorder.Event(sysauth, corev1.EventTypeNormal, "added", "object finalizer is added")
 		return ctrl.Result{}, nil
 	}
+	isUptoDate, err := r.IsUptoDate(sysauth)
+	if err != nil {
+		r.Recorder.Event(sysauth, corev1.EventTypeWarning, "checking object IsUptoDate", fmt.Sprintf("failed to check object upto date: %s", err))
+		return ctrl.Result{}, fmt.Errorf("error when checking sysauth IsUptoDate: %v", err)
+	}
 
-	if !sysauth.IsCreated() {
+	if !sysauth.IsCreated() || !isUptoDate {
 		r.Log.Info(fmt.Sprintf("submit for %v", req.NamespacedName))
 		if err := r.create(sysauth); err != nil {
-			r.Recorder.Event(sysauth, corev1.EventTypeWarning, "submitting object", fmt.Sprintf("failed to submit object: %s", err))
-			return ctrl.Result{}, fmt.Errorf("error when creating sysauth: %v", err)
+			r.Recorder.Event(sysauth, corev1.EventTypeWarning, "creating/updating object", fmt.Sprintf("failed to creating/updating object: %s", err))
+			return ctrl.Result{}, fmt.Errorf("error when creating/updating sysauth: %v", err)
 		}
-		r.Recorder.Event(sysauth, corev1.EventTypeNormal, "created", "sysauth is created")
+		if !sysauth.IsCreated() {
+			r.Recorder.Event(sysauth, corev1.EventTypeNormal, "created", "sysauth is created")
+			return ctrl.Result{}, nil
+		}
+
+		r.Recorder.Event(sysauth, corev1.EventTypeNormal, "updated", "sysauth is updated")
 		return ctrl.Result{}, nil
 	}
 
@@ -103,7 +113,7 @@ func (r *SysAuthReconciler) SetupWithManager(mgr ctrl.Manager) error {
 func (r *SysAuthReconciler) delete(s *apiv1.SysAuth) error {
 	r.Log.Info(fmt.Sprintf("deleting sysauth %s", s.GetName()))
 
-	if s.Status.CreatedTimestamp == nil {
+	if s.Status == nil {
 		return nil
 	}
 	return r.APIClient.Sys().DisableAuth(s.Spec.Path)
@@ -111,21 +121,39 @@ func (r *SysAuthReconciler) delete(s *apiv1.SysAuth) error {
 
 func (r *SysAuthReconciler) create(s *apiv1.SysAuth) error {
 	r.Log.Info(fmt.Sprintf("creating sysauth %s", s.GetName()))
-	return r.APIClient.Sys().EnableAuthWithOptions(s.Spec.Path, s.Spec.Options)
+	err := r.APIClient.Sys().EnableAuthWithOptions(s.Spec.Path,
+		&vaultapi.MountInput{
+			Description: s.Spec.Description,
+			Type:        s.Spec.Type,
+			Local:       s.Spec.Local,
+			SealWrap:    s.Spec.SealWrap,
+			Config: vaultapi.MountConfigInput{
+				DefaultLeaseTTL: s.Spec.Config.DefaultLeaseTTL,
+				MaxLeaseTTL:     s.Spec.Config.MaxLeaseTTL,
+			},
+		})
+	if err != nil {
+		return err
+	}
+	hash, err := s.GetHash()
+	if err != nil {
+		return err
+	}
+	s.Status = &apiv1.SysAuthStatus{
+		Hash: hash,
+	}
+	r.Update(context.Background(), s)
+	return nil
 }
 
 // IsUptoDate returns true if a sysauth config is current
 func (r *SysAuthReconciler) IsUptoDate(s *apiv1.SysAuth) (bool, error) {
-	if s.Status.CreatedTimestamp == nil {
+	hash, err := s.GetHash()
+	if err != nil {
+		return false, fmt.Errorf("error when calculating sysauth hash: %v", err)
+	}
+	if s.Status.Hash != hash {
 		return false, nil
 	}
-	_, err := r.APIClient.Sys().ListAuth()
-	if err != nil {
-		return false, fmt.Errorf("error when listing sysauth: %v", err)
-	}
-	// for _, auth := range authList{
-	// 	auth.
-	// }
-	// s.Spec.Options.
 	return true, nil
 }
