@@ -116,7 +116,7 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	if !isUptoDate {
 		r.Log.Info(fmt.Sprintf("updating sysauth %v", sysauth.Spec.Path))
 		if err := r.update(sysauth); err != nil {
-			r.Recorder.Event(sysauth, corev1.EventTypeWarning, "failed", fmt.Sprintf("failed to updating object: %s", err))
+			r.Recorder.Event(sysauth, corev1.EventTypeWarning, "failed", fmt.Sprintf("failed to update object: %s", err))
 			return ctrl.Result{}, fmt.Errorf("error when updating sysauth: %v", err)
 		}
 
@@ -199,7 +199,7 @@ func (r *SysAuthReconciler) create(s *apiv1.SysAuth) error {
 
 func (r *SysAuthReconciler) update(s *apiv1.SysAuth) error {
 	r.Log.Info(fmt.Sprintf("creating sysauth %s", s.GetName()))
-	err := r.APIClient.Sys().TuneMount(s.Spec.Path,
+	err := r.APIClient.Sys().TuneMount("/auth/"+s.Spec.Path,
 		vaultapi.MountConfigInput{
 			Description:     &s.Spec.Description,
 			DefaultLeaseTTL: s.Spec.Config.DefaultLeaseTTL,
