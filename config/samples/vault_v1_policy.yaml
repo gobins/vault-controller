@@ -1,0 +1,18 @@
+apiVersion: vault.gobins.github.io/v1
+kind: Policy
+metadata:
+  name: policy-sample
+  namespace: vault-controller-system
+spec:
+  # Add fields here
+  name: testpolicy
+  rules: |
+    # Grant permissions on user specific path
+    path "user-kv/data/{{identity.entity.name}}/*" {
+        capabilities = [ "create", "update", "read", "delete", "list" ]
+    }
+
+    # For Web UI usage
+    path "user-kv/metadata" {
+      capabilities = ["list"]
+    }

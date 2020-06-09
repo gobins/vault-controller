@@ -9,6 +9,26 @@ rules:
 - apiGroups:
   - vault.gobins.github.io
   resources:
+  - policies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - vault.gobins.github.io
+  resources:
+  - policies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - vault.gobins.github.io
+  resources:
   - sysauths
   verbs:
   - create
