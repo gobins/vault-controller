@@ -5,24 +5,14 @@ A K8s controller to manage Hashicorp Vault configuration using CRDs.
 ### Configuration
 To enable the controller to talk to vault API, create a configmap.
 ```
-apiVersion: vault.gobins.github.io/v1
-kind: Policy
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: policy-sample
+  name: config
   namespace: vault-controller-system
-spec:
-  # Add fields here
-  name: testpolicy
-  rules: |
-    # Grant permissions on user specific path
-    path "user-kv/data/{{identity.entity.name}}/*" {
-        capabilities = [ "create", "update", "read", "delete", "list" ]
-    }
-
-    # For Web UI usage
-    path "user-kv/metadata" {
-      capabilities = ["list"]
-    }
+data:
+  address: http://10.244.0.6:8200
+  token: root
 ```
 ### SysAuth
 ```
