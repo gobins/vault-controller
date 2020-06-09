@@ -27,6 +27,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	apiv1 "github.com/gobins/vault-controller/api/v1"
+	vaultv1 "github.com/gobins/vault-controller/api/v1"
 	"github.com/gobins/vault-controller/controllers"
 	// +kubebuilder:scaffold:imports
 )
@@ -40,6 +41,7 @@ func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
 	_ = apiv1.AddToScheme(scheme)
+	_ = vaultv1.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -71,9 +73,18 @@ func main() {
 		Client:   mgr.GetClient(),
 		Log:      ctrl.Log.WithName("controllers").WithName("SysAuth"),
 		Scheme:   mgr.GetScheme(),
-		Recorder: mgr.GetEventRecorderFor("vault-controller"),
+		Recorder: mgr.GetEventRecorderFor("sysauth-controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SysAuth")
+		os.Exit(1)
+	}
+	if err = (&controllers.PolicyReconciler{
+		Client:   mgr.GetClient(),
+		Log:      ctrl.Log.WithName("controllers").WithName("Policy"),
+		Scheme:   mgr.GetScheme(),
+		Recorder: mgr.GetEventRecorderFor("policy-controller"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Policy")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

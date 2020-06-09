@@ -54,8 +54,8 @@ type AuthConfig struct {
 
 // SysAuthStatus defines the observed state of SysAuth
 type SysAuthStatus struct {
-	Hash   string `json:"hash,omitempty"`
-	Status string `json:"status,omitempty"`
+	Hash  string `json:"hash,omitempty"`
+	State string `json:"state,omitempty"`
 }
 
 // +kubebuilder:object:root=true

@@ -95,7 +95,7 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	if !sysauth.IsCreated() {
 		r.Log.Info(fmt.Sprintf("creating sysauth %v", sysauth.Spec.Path))
 		if err := r.create(sysauth); err != nil {
-			r.Recorder.Event(sysauth, corev1.EventTypeWarning, "failed", fmt.Sprintf("failed to creating object: %s", err))
+			r.Recorder.Event(sysauth, corev1.EventTypeWarning, "failed", fmt.Sprintf("failed to create object: %s", err))
 			return ctrl.Result{}, fmt.Errorf("error when creating sysauth: %v", err)
 		}
 
@@ -106,9 +106,7 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 				return ctrl.Result{}, fmt.Errorf("error when adding finalizer: %v", err)
 			}
 			r.Recorder.Event(sysauth, corev1.EventTypeNormal, "added", "object finalizer is added")
-			return ctrl.Result{}, nil
 		}
-
 		r.Recorder.Event(sysauth, corev1.EventTypeNormal, "created", "sysauth is created")
 		return ctrl.Result{}, nil
 	}
@@ -127,7 +125,6 @@ func (r *SysAuthReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 				return ctrl.Result{}, fmt.Errorf("error when adding finalizer: %v", err)
 			}
 			r.Recorder.Event(sysauth, corev1.EventTypeNormal, "added", "object finalizer is added")
-			return ctrl.Result{}, nil
 		}
 		r.Recorder.Event(sysauth, corev1.EventTypeNormal, "updated", "sysauth is updated")
 		return ctrl.Result{}, nil
@@ -187,8 +184,8 @@ func (r *SysAuthReconciler) create(s *apiv1.SysAuth) error {
 		return err
 	}
 	s.Status = &apiv1.SysAuthStatus{
-		Hash:   hash,
-		Status: apiv1.SysAuthCreatedState,
+		Hash:  hash,
+		State: apiv1.SysAuthCreatedState,
 	}
 	err = r.Update(context.Background(), s)
 	if err != nil {
@@ -213,8 +210,8 @@ func (r *SysAuthReconciler) update(s *apiv1.SysAuth) error {
 		return err
 	}
 	s.Status = &apiv1.SysAuthStatus{
-		Hash:   hash,
-		Status: apiv1.SysAuthUpdatedState,
+		Hash:  hash,
+		State: apiv1.SysAuthUpdatedState,
 	}
 	err = r.Update(context.Background(), s)
 	if err != nil {
