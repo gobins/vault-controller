@@ -44,3 +44,8 @@ spec:
       capabilities = ["list"]
     }
 ```
+
+### Todo
+- [ ] Publish Helm Chart
+- [ ] Add webhook for validation
+- [ ] Add CRDs for auth methods(Approle, AWS, Tokens, Google Cloud)
