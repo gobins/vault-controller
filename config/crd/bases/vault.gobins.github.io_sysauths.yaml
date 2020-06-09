@@ -58,6 +58,8 @@ spec:
           properties:
             hash:
               type: string
+            status:
+              type: string
           type: object
       type: object
   version: v1

@@ -23,8 +23,18 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-//SysAuthFinalizer name of the sysauth finalizer
-const SysAuthFinalizer = "sysauth.finalizers.vault.gobins.github.io"
+const (
+	//SysAuthFinalizer name of the sysauth finalizer
+	SysAuthFinalizer = "sysauth.finalizers.vault.gobins.github.io"
+	//WatchNamespace name of the namespace on which the controller is operating
+	WatchNamespace = "vault-controller-system"
+	//SysAuthFailedState state when failed
+	SysAuthFailedState = "failed"
+	//SysAuthCreatedState state when created
+	SysAuthCreatedState = "created"
+	//SysAuthUpdatedState state when updated
+	SysAuthUpdatedState = "updated"
+)
 
 // SysAuthSpec defines the desired state of SysAuth
 type SysAuthSpec struct {
@@ -44,7 +54,8 @@ type AuthConfig struct {
 
 // SysAuthStatus defines the observed state of SysAuth
 type SysAuthStatus struct {
-	Hash string `json:"hash,omitempty"`
+	Hash   string `json:"hash,omitempty"`
+	Status string `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -88,7 +99,7 @@ func (s *SysAuth) RemoveFinalizer(name string) {
 
 // GetHash returns a hash of the struct
 func (s *SysAuth) GetHash() (string, error) {
-	hash, err := hashstructure.Hash(s, nil)
+	hash, err := hashstructure.Hash(s.Spec, nil)
 	return fmt.Sprintf("%d", hash), err
 }
 
