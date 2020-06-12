@@ -62,7 +62,6 @@ func main() {
 		Port:               9443,
 		LeaderElection:     enableLeaderElection,
 		LeaderElectionID:   "b0f1bfb5.vault.gobins.io",
-		Namespace:          apiv1.WatchNamespace,
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")

@@ -58,7 +58,7 @@ spec:
           properties:
             hash:
               type: string
-            status:
+            state:
               type: string
           type: object
       type: object

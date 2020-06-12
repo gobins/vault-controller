@@ -45,6 +45,8 @@ type PolicyReconciler struct {
 
 // +kubebuilder:rbac:groups=vault.gobins.github.io,resources=policies,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=vault.gobins.github.io,resources=policies/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=core,resources=configmaps,verbs=get;list;watch
+// +kubebuilder:rbac:groups=core,resources=events,verbs=create
 
 func (r *PolicyReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()

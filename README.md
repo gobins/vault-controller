@@ -1,6 +1,10 @@
 # vault-controller
 A K8s controller to manage Hashicorp Vault configuration using CRDs.
 
+## Deploy
+```
+kubectl apply -f https://raw.githubusercontent.com/gobins/vault-controller/master/config/deploy.yaml
+```
 
 ### Configuration
 To enable the controller to talk to vault API, create a configmap.
@@ -46,6 +50,6 @@ spec:
 ```
 
 ### Todo
-- [ ] Publish Helm Chart
+- [ ] Add other authentication for vault client
 - [ ] Add webhook for validation
 - [ ] Add CRDs for auth methods(Approle, AWS, Tokens, Google Cloud)

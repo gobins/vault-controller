@@ -2,7 +2,6 @@ apiVersion: vault.gobins.github.io/v1
 kind: SysAuth
 metadata:
   name: sysauth-sample
-  namespace: vault-controller-system
 spec:
   # Add fields here
   path: "testapprole"
